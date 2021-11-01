@@ -40,7 +40,7 @@ export default function mergeLines(editor: Editor): void {
     });
 
     if (edits.length) {
-        editor.executeEdits('emmetMergeLines', edits, []);
+        editor.executeEdits('emmetMergeLines', edits, () => null);
         editor.pushUndoStop();
     }
 }

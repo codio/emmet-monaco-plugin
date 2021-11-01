@@ -63,3 +63,4 @@ dist/
 .next
 .DS_Store
 /.vscode
+/*.iml
