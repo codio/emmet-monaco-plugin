@@ -1,6 +1,6 @@
 import type * as monaco from 'monaco-editor';
 import { TextRange } from '@emmetio/action-utils';
-import { isCSS, isXML, docSyntax, isHTML } from '../lib/syntax';
+import { isCSS, isXML, docSyntax} from '../lib/syntax';
 import { balanceCSS, balance } from '../lib/plugin';
 import { getContent, toRange, rangeToSelection, toTextRange, textRangesEqual, textRangeContains } from '../lib/utils';
 import { Editor } from '../lib/types';
@@ -10,35 +10,32 @@ import { Editor } from '../lib/types';
  */
 export function balanceActionInward(editor: Editor): void {
     const syntax = docSyntax(editor);
+    const result: monaco.IRange[] = [];
+    const selections = editor.getSelections();
+    const model = editor.getModel();
 
-    if (isHTML(syntax) || isCSS(syntax)) {
-        const result: monaco.IRange[] = [];
-        const selections = editor.getSelections();
-        const model = editor.getModel();
+    if (selections && model) {
+        for (const sel of selections) {
+            const selRange = toTextRange(editor, sel);
+            const ranges = getRanges(editor, selRange[0], syntax, true);
 
-        if (selections && model) {
-            for (const sel of selections) {
-                const selRange = toTextRange(editor, sel);
-                const ranges = getRanges(editor, selRange[0], syntax, true);
+            // Try to find range which equals to selection: we should pick leftmost
+            const ix = ranges.findIndex(r => textRangesEqual(selRange, r));
+            let targetRange: TextRange | undefined;
 
-                // Try to find range which equals to selection: we should pick leftmost
-                const ix = ranges.findIndex(r => textRangesEqual(selRange, r));
-                let targetRange: TextRange | undefined;
-
-                if (ix < ranges.length - 1) {
-                    targetRange = ranges[ix + 1];
-                } else if (ix !== -1) {
-                    // No match found, pick closest region
-                    targetRange = ranges.find(r => textRangeContains(r, selRange));
-                }
-
-                result.push(toRange(editor, targetRange || selRange));
+            if (ix < ranges.length - 1) {
+                targetRange = ranges[ix + 1];
+            } else if (ix !== -1) {
+                // No match found, pick closest region
+                targetRange = ranges.find(r => textRangeContains(r, selRange));
             }
-        }
 
-        if (result.length) {
-            editor.setSelections(result.map(rangeToSelection));
+            result.push(toRange(editor, targetRange || selRange));
         }
+    }
+
+    if (result.length) {
+        editor.setSelections(result.map(rangeToSelection));
     }
 }
 
@@ -47,28 +44,25 @@ export function balanceActionInward(editor: Editor): void {
  */
 export function balanceActionOutward(editor: Editor): void {
     const syntax = docSyntax(editor);
+    const result: monaco.IRange[] = [];
+    const selections = editor.getSelections();
+    const model = editor.getModel();
 
-    if (isHTML(syntax) || isCSS(syntax)) {
-        const result: monaco.IRange[] = [];
-        const selections = editor.getSelections();
-        const model = editor.getModel();
+    if (selections && model) {
+        for (const sel of selections) {
+            const selRange = toTextRange(editor, sel);
+            const pos = model.getOffsetAt(sel.getStartPosition());
+            const ranges = getRanges(editor, pos, syntax);
 
-        if (selections && model) {
-            for (const sel of selections) {
-                const selRange = toTextRange(editor, sel);
-                const pos = model.getOffsetAt(sel.getStartPosition());
-                const ranges = getRanges(editor, pos, syntax);
+            const targetRange = ranges
+                .find(r => textRangeContains(r, selRange) && r[1] > selRange[1]);
 
-                const targetRange = ranges
-                    .find(r => textRangeContains(r, selRange) && r[1] > selRange[1]);
-
-                result.push(toRange(editor, targetRange || selRange));
-            }
+            result.push(toRange(editor, targetRange || selRange));
         }
+    }
 
-        if (result.length) {
-            editor.setSelections(result.map(rangeToSelection));
-        }
+    if (result.length) {
+        editor.setSelections(result.map(rangeToSelection));
     }
 }
 
