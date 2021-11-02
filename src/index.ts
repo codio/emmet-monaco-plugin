@@ -10,6 +10,7 @@ import selectItemAction from './action/select-item';
 import splitJoinTagAction from './action/split-join-tag';
 import wrapWithAbbreviationAction from './action/wrap-with-abbreviation';
 import mergeLines from './action/merge-lines';
+import reflectCssValue from './action/reflect-css-value';
 import {getEmmetConfig, setEmmetConfig} from './lib/config';
 
 const actions = {
@@ -25,7 +26,8 @@ const actions = {
     selectItemAction,
     splitJoinTagAction,
     wrapWithAbbreviationAction,
-    mergeLines
+    mergeLines,
+    reflectCssValue
 }
 
 const config = {
