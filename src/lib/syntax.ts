@@ -73,7 +73,7 @@ export function syntaxInfo(editor: Editor, pos: number): SyntaxInfo {
  */
 export function docSyntax(editor: Editor): string {
     const model = editor.getModel();
-    return model ? model.getModeId() : '';
+    return model ? model.getLanguageId() : '';
 }
 
 /**

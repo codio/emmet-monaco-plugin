@@ -26,7 +26,7 @@
     "@typescript-eslint/eslint-plugin": "^4.6.0",
     "@typescript-eslint/parser": "^4.6.0",
     "eslint": "^7.12.1",
-    "monaco-editor": "^0.21.2",
+    "monaco-editor": "^0.30.1",
     "rollup": "^2.32.1",
     "rollup-plugin-typescript2": "^0.29.0",
     "tslib": "^2.0.3",
