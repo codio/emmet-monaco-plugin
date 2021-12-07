@@ -30,3 +30,16 @@ function runExpand(editor: Editor, abbr: string, range: TextRange, options?: Use
     const snippet = expandAbbreviation(abbr, options);
     replaceWithSnippet(editor, range, snippet);
 }
+
+export function hasAbbreviation(ed: Editor): boolean {
+    const model = ed.getModel()!
+    const caret = getCaret(ed);
+    const pos = model.getPositionAt(caret);
+    const lineRange = getLineRange(ed, caret);
+    const options = getOptions(ed, caret);
+    const line = substr(ed, lineRange);
+
+    // NB: in Monaco text positions are 1-based
+    const column = pos.column - 1;
+    return !!extract(line, column, getSyntaxType(options.syntax));
+}

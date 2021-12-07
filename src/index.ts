@@ -1,4 +1,4 @@
-import expandAction from './action/expand-abbreviation';
+import expandAction, {hasAbbreviation} from './action/expand-abbreviation';
 import { balanceActionInward, balanceActionOutward } from './action/balance';
 import commentAction from './action/comment';
 import evaluateMathAction from './action/evaluate-math';
@@ -35,7 +35,12 @@ const config = {
     setEmmetConfig
 }
 
+const helper = {
+    hasAbbreviation
+}
+
 export {
     actions,
-    config
+    config,
+    helper
 }
