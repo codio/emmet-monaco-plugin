@@ -1,7 +1,7 @@
 import type { TextRange } from '@emmetio/action-utils';
 import type { UserConfig } from 'emmet';
 import { extract, getOptions, expandAbbreviation } from '../lib/plugin';
-import { getSyntaxType } from '../lib/syntax';
+import {getSyntaxType, isSupported} from '../lib/syntax';
 import { Editor } from '../lib/types';
 import { getCaret, getLineRange, replaceWithSnippet, substr } from '../lib/utils';
 
@@ -16,6 +16,9 @@ export default function expand(ed: Editor): void {
     const options = getOptions(ed, caret);
     const line = substr(ed, lineRange);
 
+    if (!options.syntax || !isSupported(options.syntax)) {
+        return
+    }
     // NB: in Monaco text positions are 1-based
     const column = pos.column - 1;
     const abbr = extract(line, column, getSyntaxType(options.syntax));
@@ -38,6 +41,10 @@ export function hasAbbreviation(ed: Editor): boolean {
     const lineRange = getLineRange(ed, caret);
     const options = getOptions(ed, caret);
     const line = substr(ed, lineRange);
+
+    if (!options.syntax || !isSupported(options.syntax)) {
+        return false
+    }
 
     // NB: in Monaco text positions are 1-based
     const column = pos.column - 1;
