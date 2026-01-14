@@ -108,6 +108,7 @@ export default function wrapWithAbbreviation(editor: Editor): void {
 
 function createInputPanel(): monaco.editor.IOverlayWidget {
     const elem = document.createElement('div');
+    elem.style.zIndex = '10';
     elem.className = baseClass;
     elem.innerHTML = `<div class="${baseClass}-wrapper">
         <input type="text" placeholder="Enter abbreviation" autofocus />
